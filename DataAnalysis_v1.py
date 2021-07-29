@@ -23,9 +23,24 @@ col_names2 = SMEAR2.columns
 SMEAR2a = SMEAR2.set_index('Time')
 dtypes_SMEAR2a = SMEAR2a.dtypes
 col_names2a = SMEAR2a.columns
-R = SMEAR2a.corr(method ='pearson')
+Rp = SMEAR2a.corr(method ='pearson')
+Rs = SMEAR2a.corr(method ='spearman')
 
-print(R)
+# df.reindex(df.b.abs().sort_values().index)
+#Rp.reindex(Rp.abs().sort_values(by=['H2SO4_tower'], inplace=True))
+
+# Arrange variables based on Pearson and Spearman correlations
+# Rp.sort_values(by=['H2SO4_tower'], key=pd.Series.abs(), inplace=True)
+# https://newbedev.com/sorting-by-absolute-value-without-changing-the-data
+Rp1 = Rp.iloc[Rp['H2SO4_tower'].abs().argsort()]
+# Rs.sort_values(by=['H2SO4_tower'], inplace=True)
+Rs1 = Rs.iloc[Rp['H2SO4_tower'].abs().argsort()]
+
+Rpearson  = Rp1.index
+Rspearman = Rs1.index
+
+
+#print(Rs)
 
 '''
 SMEAR2a.drop('Time')
