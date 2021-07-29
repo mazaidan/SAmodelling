@@ -11,11 +11,12 @@ import pandas as pd
 
 
 # data = pd.read_csv("SMEARII/SMEAR2.xlsx") 
-data = pd.read_excel("SMEARII/SMEAR2.xlsx", sheet_name=None)
+#data = pd.read_excel("SMEARII/SMEAR2.xlsx", sheet_name=None)
+SMEAR2 = pd.read_excel("SMEARII/SMEAR2.xlsx")
 
 #pd.read_excel("SMEARII/SMEAR2.xlsx", sheet_name=None)
 
-SMEAR2 = data['Sheet1']
+#SMEAR2 = data['Sheet1']
 dtypes_SMEAR2 = SMEAR2.dtypes
 col_names2 = SMEAR2.columns
 
@@ -38,6 +39,44 @@ Rs1 = Rs.iloc[Rp['H2SO4_tower'].abs().argsort()]
 
 Rpearson  = Rp1.index
 Rspearman = Rs1.index
+
+## MUTUAL INFORMATION
+# https://stackoverflow.com/questions/29120626/removing-nans-in-numpy-arrays
+# https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_regression.html
+
+from sklearn import feature_selection
+import numpy as np
+
+SMEAR2b = SMEAR2a.to_numpy()
+type(SMEAR2b)
+
+# Z = np.column_stack((SMEAR2b[:,0],SMEAR2b[:,1]))
+
+
+N = SMEAR2b.shape[1]
+MI = np.zeros([1,N])
+
+for n in range(N-1):
+    
+    X = SMEAR2b[:,0]
+    Y = SMEAR2b[:,n]
+
+    idx = np.where(~np.isnan(X+Y))
+    if len(idx[0]) == 0:
+        MI[0,n] = np.nan
+    else:     
+        X = X[idx]
+        Y = Y[idx]
+        X = X.reshape((X.shape[0], 1))
+        Y = Y.reshape((Y.shape[0], 1))
+        # sklearn.feature_selection.mutual_info_regression(X, y) 
+        MI[0,n] = feature_selection.mutual_info_regression(X, Y)
+
+# NEXT STEPS:
+    # 1. Do we need to normalize data for X and Y, do we need to normalize them?
+    # 2. We make a comparison between MI, Rp and Rs
+    # 3. We group the correlations between their groups, such as RH, Temp, etc.
+    # 4. We select the most appropriate vars (max 5) to model H2SO4
 
 
 #print(Rs)
