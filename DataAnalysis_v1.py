@@ -72,7 +72,7 @@ for n in range(N-1):
         # sklearn.feature_selection.mutual_info_regression(X, y) 
         MI[0,n] = feature_selection.mutual_info_regression(X, Y)
 
-# NEXT STEPS:
+# NEXT STEPS (to be done):
     # 1. Do we need to normalize data for X and Y, do we need to normalize them?
     # 2. We make a comparison between MI, Rp and Rs
     #    For example, we can choose the first 10 vars, and find the intersections
