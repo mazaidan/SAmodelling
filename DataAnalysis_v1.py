@@ -75,6 +75,8 @@ for n in range(N-1):
 # NEXT STEPS:
     # 1. Do we need to normalize data for X and Y, do we need to normalize them?
     # 2. We make a comparison between MI, Rp and Rs
+    #    For example, we can choose the first 10 vars, and find the intersections
+    #    between Rs and MI
     # 3. We group the correlations between their groups, such as RH, Temp, etc.
     # 4. We select the most appropriate vars (max 5) to model H2SO4
 
