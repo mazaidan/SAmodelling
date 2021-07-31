@@ -91,14 +91,31 @@ Col_namesRs, MISpf = highest_corr(CorrVars,Col_names)
 Col_namesMI_ = Col_namesMI[0]
 Col_namesRs_ = Col_namesRs[0]
 
-Col_namesMI_top20 = Col_namesMI_[0:100,0]
-Col_namesRs_top20 = Col_namesRs_[0:100,0]
+Col_namesMI_top20 = Col_namesMI_[0:50,0]
+Col_namesRs_top20 = Col_namesRs_[0:50,0]
 
 
 set(Col_namesMI_top20) & set(Col_namesRs_top20)
 
-if any("SO2" in s for s in Col_namesMI_):
+n = -1
+for s in Col_namesMI_:#Col_namesRs_:
+    n = n + 1
+    if "SO2" in s[0]:
+        print('HERE THERE ARE')
+        print("SO2" in s[0])
+        print(n)
+    #else:
+    #    print('')
+        #print('NOT YET)')
+        
+    #print(s[0])
+    #print("SO2" in s[0])
+
+
+if any("H2SO4" in s[0] for s in Col_namesMI_top20):
     print('SO2 exists')
+else:
+    print('Ga ADA')
 
 #########################################
 
