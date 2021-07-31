@@ -71,6 +71,86 @@ for n in range(N-1):
         Y = Y.reshape((Y.shape[0], 1))
         # sklearn.feature_selection.mutual_info_regression(X, y) 
         MI[0,n] = feature_selection.mutual_info_regression(X, Y)
+        
+
+# Mutual Information
+        
+Col_names = col_names2a
+CorrVars  = MI
+
+Col_namesMI, MIf = highest_corr(CorrVars,Col_names)
+
+# Spearman correlation
+
+Col_names = col_names2a
+CorrVars0 = Rs['H2SO4_tower'].to_numpy()
+CorrVars = CorrVars0.reshape((1, CorrVars0.shape[0]))
+
+Col_namesRs, MISpf = highest_corr(CorrVars,Col_names)
+
+Col_namesMI_ = Col_namesMI[0]
+Col_namesRs_ = Col_namesRs[0]
+
+Col_namesMI_top20 = Col_namesMI_[0:100,0]
+Col_namesRs_top20 = Col_namesRs_[0:100,0]
+
+
+set(Col_namesMI_top20) & set(Col_namesRs_top20)
+
+if any("SO2" in s for s in Col_namesMI_):
+    print('SO2 exists')
+
+#########################################
+
+
+# First, we remove MI which contain nan values:
+out_arr0 = np.argwhere(~np.isnan(MI[0]))
+MI1= MI[0][out_arr0.transpose()]    
+col_names2aa = col_names2a[out_arr0]    
+
+out_arr = np.argsort(MI1,axis=1)
+
+print('index ascending order: ' + str(out_arr))
+print('MI ascending order: ' + str(MI1[0][out_arr]))
+print('Vars names ascending order: ' + col_names2aa[out_arr])
+
+out_arr1 = np.flip(out_arr)
+print('index descending order: ' + str(out_arr1))
+print('MI descending order: ' + str(MI1[0][out_arr1]))
+print('Vars names descending order: ' + col_names2aa[out_arr1]) 
+
+
+MIf = MI1[0][out_arr1]
+col_names2af = col_names2aa[out_arr1]
+
+def highest_corr(CorrVars,Col_names):
+  print("Top highest var correlations")
+  
+  MI = CorrVars 
+  col_names2a = Col_names 
+  
+  # First, we remove MI which contain nan values:
+  out_arr0 = np.argwhere(~np.isnan(MI[0]))
+  MI1= MI[0][out_arr0.transpose()]    
+  col_names2aa = col_names2a[out_arr0]    
+
+  # out_arr = np.argsort(MI1,axis=1)
+  out_arr = np.argsort(abs(MI1),axis=1)
+
+  print('index ascending order: ' + str(out_arr))
+  print('MI ascending order: ' + str(MI1[0][out_arr]))
+  print('Vars names ascending order: ' + col_names2aa[out_arr])
+
+  out_arr1 = np.flip(out_arr)
+  print('index descending order: ' + str(out_arr1))
+  print('MI descending order: ' + str(MI1[0][out_arr1]))
+  print('Vars names descending order: ' + col_names2aa[out_arr1]) 
+
+  MIf = MI1[0][out_arr1]
+  col_names2af = col_names2aa[out_arr1]
+
+  return col_names2af, MIf        
+
 
 # NEXT STEPS (to be done):
     # 1. Do we need to normalize data for X and Y, do we need to normalize them?
