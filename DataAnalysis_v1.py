@@ -71,7 +71,35 @@ for n in range(N-1):
         Y = Y.reshape((Y.shape[0], 1))
         # sklearn.feature_selection.mutual_info_regression(X, y) 
         MI[0,n] = feature_selection.mutual_info_regression(X, Y)
-        
+
+
+def highest_corr(CorrVars,Col_names):
+  print("Top highest var correlations")
+  
+  MI = CorrVars 
+  col_names2a = Col_names 
+  
+  # First, we remove MI which contain nan values:
+  out_arr0 = np.argwhere(~np.isnan(MI[0]))
+  MI1= MI[0][out_arr0.transpose()]    
+  col_names2aa = col_names2a[out_arr0]    
+
+  # out_arr = np.argsort(MI1,axis=1)
+  out_arr = np.argsort(abs(MI1),axis=1)
+
+  print('index ascending order: ' + str(out_arr))
+  print('MI ascending order: ' + str(MI1[0][out_arr]))
+  print('Vars names ascending order: ' + col_names2aa[out_arr])
+
+  out_arr1 = np.flip(out_arr)
+  print('index descending order: ' + str(out_arr1))
+  print('MI descending order: ' + str(MI1[0][out_arr1]))
+  print('Vars names descending order: ' + col_names2aa[out_arr1]) 
+
+  MIf = MI1[0][out_arr1]
+  col_names2af = col_names2aa[out_arr1]
+
+  return col_names2af, MIf
 
 # Mutual Information
         
@@ -117,56 +145,11 @@ if any("H2SO4" in s[0] for s in Col_namesMI_top20):
 else:
     print('Ga ADA')
 
-#########################################
 
 
-# First, we remove MI which contain nan values:
-out_arr0 = np.argwhere(~np.isnan(MI[0]))
-MI1= MI[0][out_arr0.transpose()]    
-col_names2aa = col_names2a[out_arr0]    
-
-out_arr = np.argsort(MI1,axis=1)
-
-print('index ascending order: ' + str(out_arr))
-print('MI ascending order: ' + str(MI1[0][out_arr]))
-print('Vars names ascending order: ' + col_names2aa[out_arr])
-
-out_arr1 = np.flip(out_arr)
-print('index descending order: ' + str(out_arr1))
-print('MI descending order: ' + str(MI1[0][out_arr1]))
-print('Vars names descending order: ' + col_names2aa[out_arr1]) 
 
 
-MIf = MI1[0][out_arr1]
-col_names2af = col_names2aa[out_arr1]
 
-def highest_corr(CorrVars,Col_names):
-  print("Top highest var correlations")
-  
-  MI = CorrVars 
-  col_names2a = Col_names 
-  
-  # First, we remove MI which contain nan values:
-  out_arr0 = np.argwhere(~np.isnan(MI[0]))
-  MI1= MI[0][out_arr0.transpose()]    
-  col_names2aa = col_names2a[out_arr0]    
-
-  # out_arr = np.argsort(MI1,axis=1)
-  out_arr = np.argsort(abs(MI1),axis=1)
-
-  print('index ascending order: ' + str(out_arr))
-  print('MI ascending order: ' + str(MI1[0][out_arr]))
-  print('Vars names ascending order: ' + col_names2aa[out_arr])
-
-  out_arr1 = np.flip(out_arr)
-  print('index descending order: ' + str(out_arr1))
-  print('MI descending order: ' + str(MI1[0][out_arr1]))
-  print('Vars names descending order: ' + col_names2aa[out_arr1]) 
-
-  MIf = MI1[0][out_arr1]
-  col_names2af = col_names2aa[out_arr1]
-
-  return col_names2af, MIf        
 
 
 # NEXT STEPS (to be done):

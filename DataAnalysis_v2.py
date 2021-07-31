@@ -6,17 +6,14 @@ Created on Tue Jul 27 12:46:12 2021
 @author: zaidanma
 """
 import pandas as pd
-#import numpy as np
+import numpy as np
+from sklearn import feature_selection
 #import matplotlib.pyplot as plt
 
 
-# data = pd.read_csv("SMEARII/SMEAR2.xlsx") 
-#data = pd.read_excel("SMEARII/SMEAR2.xlsx", sheet_name=None)
 SMEAR2 = pd.read_excel("SMEARII/SMEAR2.xlsx")
 
-#pd.read_excel("SMEARII/SMEAR2.xlsx", sheet_name=None)
 
-#SMEAR2 = data['Sheet1']
 dtypes_SMEAR2 = SMEAR2.dtypes
 col_names2 = SMEAR2.columns
 
@@ -27,14 +24,9 @@ col_names2a = SMEAR2a.columns
 Rp = SMEAR2a.corr(method ='pearson')
 Rs = SMEAR2a.corr(method ='spearman')
 
-# df.reindex(df.b.abs().sort_values().index)
-#Rp.reindex(Rp.abs().sort_values(by=['H2SO4_tower'], inplace=True))
-
 # Arrange variables based on Pearson and Spearman correlations
-# Rp.sort_values(by=['H2SO4_tower'], key=pd.Series.abs(), inplace=True)
 # https://newbedev.com/sorting-by-absolute-value-without-changing-the-data
 Rp1 = Rp.iloc[Rp['H2SO4_tower'].abs().argsort()]
-# Rs.sort_values(by=['H2SO4_tower'], inplace=True)
 Rs1 = Rs.iloc[Rp['H2SO4_tower'].abs().argsort()]
 
 Rpearson  = Rp1.index
@@ -44,14 +36,11 @@ Rspearman = Rs1.index
 # https://stackoverflow.com/questions/29120626/removing-nans-in-numpy-arrays
 # https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_regression.html
 
-from sklearn import feature_selection
-import numpy as np
 
 SMEAR2b = SMEAR2a.to_numpy()
 type(SMEAR2b)
 
 # Z = np.column_stack((SMEAR2b[:,0],SMEAR2b[:,1]))
-
 
 N = SMEAR2b.shape[1]
 MI = np.zeros([1,N])
@@ -73,7 +62,7 @@ for n in range(N-1):
         MI[0,n] = feature_selection.mutual_info_regression(X, Y)
         
 
-from function import highest_correlation
+from Functions.Functions import highest_correlation
 
 # Mutual Information
         
@@ -100,7 +89,7 @@ Col_namesRs_top20 = Col_namesRs_[0:50,0]
 set(Col_namesMI_top20) & set(Col_namesRs_top20)
 
 n = -1
-for s in Col_namesMI_:#Col_namesRs_:
+for s in Col_namesMI_:
     n = n + 1
     if "SO2" in s[0]:
         print('HERE THERE ARE')
@@ -132,18 +121,7 @@ else:
     # 3. We group the correlations between their groups, such as RH, Temp, etc.
     # 4. We select the most appropriate vars (max 5) to model H2SO4
 
-
-#print(Rs)
-
-'''
-SMEAR2a.drop('Time')
-
-N = len(col_names)
-r_vars = np.zeros([1,N])
-for n in range(N-1):  
-  r = np.corrcoef(SMEAR2[col_names[1]], SMEAR2[col_names[n+1]])
-  r_vars[0,n] = r[0,1] 
-  print(n)
-  print(col_names[n])
-  print(r_vars)
-'''
+# Also, investigate these:
+    # https://scikit-learn.org/stable/auto_examples/feature_selection/plot_f_test_vs_mi.html
+    # https://machinelearningmastery.com/feature-selection-for-regression-data/
+    # https://medium.com/@hertan06/which-features-to-use-in-your-model-350630a1e31c 

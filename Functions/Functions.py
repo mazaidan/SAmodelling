@@ -20,13 +20,13 @@ def highest_correlation(Col,C):
   out_arr = np.argsort(abs(C1),axis=1)
 
   print('index ascending order: ' + str(out_arr))
-  print('MI ascending order: ' + str(C1[0][out_arr]))
+  print('Correlation score ascending order: ' + str(C1[0][out_arr]))
   print('Vars names ascending order: ' + Col1[out_arr])
   
   # Third, we flip the array into descending order
   out_arr1 = np.flip(out_arr)
   print('index descending order: ' + str(out_arr1))
-  print('MI descending order: ' + str(C1[0][out_arr1]))
+  print('Correlation score descending order: ' + str(C1[0][out_arr1]))
   print('Vars names descending order: ' + Col1[out_arr1]) 
 
   Cf = C1[0][out_arr1]
