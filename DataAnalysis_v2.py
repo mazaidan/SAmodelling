@@ -21,6 +21,10 @@ col_names2 = SMEAR2.columns
 SMEAR2a = SMEAR2.set_index('Time')
 dtypes_SMEAR2a = SMEAR2a.dtypes
 col_names2a = SMEAR2a.columns
+
+SMEAR2a = SMEAR2a_nannight.copy() 
+
+
 Rp = SMEAR2a.corr(method ='pearson')
 Rs = SMEAR2a.corr(method ='spearman')
 
@@ -109,9 +113,85 @@ else:
     print('Ga ADA')
 
 
-#########################################
-                
+#%% ########################################
+# https://github.com/SatAgro/suntime
+from datetime import timedelta
+import datetime
+from suntime import Sun, SunTimeException
 
+latitude = 61 + 51/60
+longitude = 24 + 17/60
+
+sun = Sun(latitude, longitude)
+
+# On a special date in your machine's local time zone
+abd = datetime.date(2021, 8,1)
+abd_sr = sun.get_local_sunrise_time(abd)
+abd_ss = sun.get_local_sunset_time(abd)
+print('On {} the sun at Hyytiala raised at {} and get down at {}.'.
+      format(abd, abd_sr.strftime('%H:%M'), abd_ss.strftime('%H:%M')))
+
+# Get today's sunrise and sunset in UTC
+date_sr = sun.get_sunrise_time()
+date_ss = sun.get_sunset_time()
+print('Today at Hyytiala the sun raised at {} and get down at {} UTC'.
+      format(date_sr.strftime('%H:%M'), date_ss.strftime('%H:%M')))
+local_sr = date_sr + timedelta(hours=3)
+local_ss = date_ss + timedelta(hours=3)
+print('When we convert to Finnish time, the sun raised at {} and get down at {}'.
+      format(local_sr.strftime('%H:%M'), local_ss.strftime('%H:%M')))
+
+# Make new array from SMEAR2a
+Time   = SMEAR2['Time']
+Time_a = SMEAR2a.index
+
+Sunlight_idx = np.zeros([len(Time),1])
+Sunlight_list =  [None] * len(Time)
+for s in range(len(Time)):
+    print(s)
+    abd0 = Time[s].to_pydatetime() # datetime.date(2021, 8,1)
+    abd = abd0.date()
+    abd_sr = sun.get_sunrise_time(abd) + timedelta(hours=3)
+    abd_ss = sun.get_sunset_time(abd)  + timedelta(hours=3)
+    
+    # To allows direct comparison between datetime object, we remove
+    # tzinfo class
+    # https://stackoverflow.com/questions/10944047/how-can-i-remove-a-pytz-timezone-from-a-datetime-object
+    abd_sr = abd_sr.replace(tzinfo=None)
+    abd_ss = abd_ss.replace(tzinfo=None)
+    
+    print(abd)
+    print(abd_sr)
+    print(abd_ss)
+    
+    mask = (abd0 > abd_sr) & (abd0 <= abd_ss)
+    
+    Sunlight_idx[s,0] = mask
+    Sunlight_list[s]  = not(mask)
+    
+    print(mask)
+    print('')
+
+# We need to use copy command, instead of SMEAR2a_sl = SMEAR2a
+# The above will act as a pointer
+# https://stackoverflow.com/questions/35665135/why-can-pandas-dataframes-change-each-other    
+SMEAR2a_sl = SMEAR2a.copy() 
+SMEAR2a_sl['sl_idx'] = Sunlight_idx
+
+#idx = SMEAR2a_sl['sl_idx'].to_numpy()
+#idx = idx.astype(np.int)
+
+#SMEAR2a_sl.iloc[idx,0:-1] = np.nan
+
+SMEAR2a_sl.iloc[Sunlight_list,0:-1] = np.nan
+SMEAR2a_nannight = SMEAR2a_sl.copy() 
+SMEAR2a_nannight.drop(['sl_idx'], axis=1,inplace=True)
+
+    
+#%%                
+# OTHER STEPS:
+    # 1. sunset and sunrise filters, and re-calculate the correlation
+    # 2. H2SO4 diurnal cycles and monthly diurnal cycles + subset/sunlight
 
 # NEXT STEPS (to be done):
     # 1. Do we need to normalize data for X and Y, do we need to normalize them?
