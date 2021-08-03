@@ -99,28 +99,28 @@ Col_namesMI_top20 = Col_namesMI_[0:50,0]
 Col_namesRs_top20 = Col_namesRs_[0:50,0]
 
 
-set(Col_namesMI_top20) & set(Col_namesRs_top20)
+Top20_ = set(Col_namesMI_top20) & set(Col_namesRs_top20)
+Top20  = list(Top20_)
 
+n = -1
+for s in Col_namesRs_:
+    n = n + 1
+    if "SO2" in s[0]:
+        print("var SO2 is on the importance number (Spearman): "+str(n))
+        
 n = -1
 for s in Col_namesMI_:
     n = n + 1
     if "SO2" in s[0]:
-        print('HERE THERE ARE')
-        print("SO2" in s[0])
-        print(n)
-    #else:
-    #    print('')
-        #print('NOT YET)')
-        
-    #print(s[0])
-    #print("SO2" in s[0])
+        print("var SO2 is on the importance number (MI): "+str(n))
+       
 
+print('The size of Top 50 correlated variables is: ' + str(len(Top20)))
 
-if any("H2SO4" in s[0] for s in Col_namesMI_top20):
-    print('SO2 exists')
-else:
-    print('Ga ADA')
-
+# https://stackoverflow.com/questions/4843158/check-if-a-string-is-a-substring-of-items-in-a-python-list-of-strings
+var_word = 'SO2'
+matching = [s for s in Top20 if var_word in s]
+print(matching)
 
 
     
